@@ -84,7 +84,13 @@ const Login = () => {
       {/* Logo */}
       <div className="flex justify-center mb-8">
         <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
-          <span className="text-2xl font-bold text-blue-600">LOGO</span>
+            {/* <Link href="/" className="flex items-center">
+                    <img 
+                      src="../../public/Images/logo.svg" 
+                      alt="Company Logo" 
+                      className="h-5 w-auto"
+                    />
+                  </Link> */}
         </div>
       </div>
 

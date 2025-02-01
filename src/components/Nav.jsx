@@ -21,25 +21,13 @@ const Navigation = () => {
         <Link to="/" className="text-gray-700 hover:text-gray-900">Home</Link>
         <Link to="/events" className="text-gray-700 hover:text-gray-900">Events List</Link>
         <Link to="/tickets" className="text-gray-700 hover:text-gray-900">My Tickets</Link>
-        <Link to="/contact" className="text-gray-700 hover:text-gray-900">Contact</Link>
+        
         <div className="relative group">
             <button className="text-gray-700 hover:text-gray-900 flex items-center"
             onClick={() => navigate('/manage')}
-            >
-                Manage Events
-                {/* <svg
-                    className="ml-1 w-4 h-4"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >   
-                    <path d="M19 9l-7 7-7-7"></path>
-                </svg> */}
-            </button>
+            >Manage Events</button>
         </div>
+        <Link to="/contact" className="text-gray-700 hover:text-gray-900">Contact</Link>
         </div>
     
 

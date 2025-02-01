@@ -80,14 +80,22 @@ const MyList = () => {
     <Navigation />
     <div className="min-h-screen bg-gray-50">
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-orange-500 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Tickets</h1>
-          <p className="text-gray-700">
-            Easily view and manage all your booked events in one convenient location.
-          </p>
+      <div className="relative mb-12">
+          <div className="bg-gradient-to-r from-orange-600 to-black-800 pb-32 pt-12">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center text-white">
+                <h1 className="text-4xl font-bold mb-2">Discover</h1>
+                <h2 className="text-6xl font-extrabold mb-4">View your events</h2>
+                <p className="text-blue-100 text-lg mb-8">
+                Easily view and manage all your booked events in one convenient location.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          </div>
         </div>
-      </div>
+
 
       {/* Main content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

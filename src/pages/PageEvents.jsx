@@ -56,7 +56,7 @@ const PageEvents = () => {
       <Navigation />
       <div className="min-h-screen bg-gray-50">
         <div className="relative mb-12">
-          <div className="bg-gradient-to-r from-blue-600 to-black-800 pb-32 pt-12">
+          <div className="bg-gradient-to-r from-orange-600 to-black-800 pb-32 pt-12">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center text-white">
                 <h1 className="text-4xl font-bold mb-2">Discover</h1>
@@ -76,7 +76,7 @@ const PageEvents = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Events</h2>
-            <div className="mt-1 h-1 w-24 bg-blue-600 rounded"></div>
+            <div className="mt-1 h-1 w-24 bg-orange-600 rounded"></div>
           </div>
           {loading ? (
             <div className="text-center py-12">Loading events...</div>

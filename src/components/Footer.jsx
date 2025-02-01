@@ -31,7 +31,7 @@ const Footer = () => {
         <div className="col-span-3">
           <Link href="/" className="flex items-center">
                     <img 
-                      src="../../public/Images/logo.svg" 
+                      src="../../public/Images/logo(T).svg" 
                       alt="Company Logo" 
                       className="h-22 w-auto"
                     />
