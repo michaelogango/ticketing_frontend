@@ -27,7 +27,7 @@ const EventCard = ({ event, onBookNow }) => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Price</p>
-              <p className="font-medium">${event.ticketPrice.toFixed(2)}</p>
+              <p className="font-medium">${typeof event.ticketPrice === "number" ? event.ticketPrice.toFixed(2) : "0.00"}</p>
             </div>
           </div>
           <p className="text-gray-700 mb-4">{event.description}</p>
