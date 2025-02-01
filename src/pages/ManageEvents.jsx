@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import Navigation from '../components/Nav';
+import EventsList from '../components/EventsList'; 
 
 const ManageEvent = () => {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
+  const [isEventsListModalOpen, setIsEventsListModalOpen] = useState(false);
 
   const [eventData, setEventData] = useState({
     title: '',
@@ -22,6 +25,12 @@ const ManageEvent = () => {
     phone: ''
   });
 
+  const [venueData, setVenueData] = useState({
+    name: '',
+    address: '',
+    capacity: ''
+    });
+
   const [errors, setErrors] = useState({});
 
   // Handles changes for both event and user forms
@@ -37,7 +46,13 @@ const ManageEvent = () => {
         ...prevEventData,
         [name]: value,
       }));
-    }
+    }else if (type === "venue") {
+        setVenueData((prevVenueData) => ({
+          ...prevVenueData,
+          [name]: value,
+        }));
+      }
+
   };
 
   // Form validation function
@@ -54,7 +69,11 @@ const ManageEvent = () => {
       if (!userData.name) newErrors.name = 'Name is required';
       if (!userData.email) newErrors.email = 'Email is required';
       if (!userData.phone) newErrors.phone = 'Phone number is required';
-    }
+    }else if (type === "venue") {
+        if (!venueData.name) newErrors.name = 'Name is required';
+        if (!venueData.address) newErrors.address = 'Address is required';
+        if (!venueData.capacity || isNaN(venueData.capacity)) newErrors.capacity = 'Valid capacity is required';
+      }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -101,6 +120,23 @@ const ManageEvent = () => {
       }
     }
   };
+  const handleVenueSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm("venue")) {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/venues', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(venueData),
+            });
+        } catch (error) {
+            console.error('Error adding venue:', error);
+        }
+    }
+    }
+
 
   return (
     <>
@@ -134,8 +170,8 @@ const ManageEvent = () => {
             <p className="text-gray-600">Attend your event with those you consider family.</p>
             <div className="flex justify-center gap-3">
               <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserModalOpen(true)}>Add User</button>
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserModalOpen(true)}>View User</button>
-            </div>
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsEventsListModalOpen(true)}>View User</button> {/* Opens Events List modal */}
+            </div>    
           </div>
         </div>
 
@@ -144,8 +180,8 @@ const ManageEvent = () => {
             <h2 className="text-4xl font-bold text-gray-900">Add where you would like to hold it</h2>
             <p className="text-gray-600">Location, Location Location, feel free to put any Venue</p>
             <div className="flex justify-center gap-3">
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserModalOpen(true)}>Add Venue</button>
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserModalOpen(true)}>Manage Venue</button>
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsVenueModalOpen(true)}>Add Venue</button>
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsVenueModalOpen(true)}>Manage Venue</button>
             </div>
           </div>
         </div>
@@ -164,7 +200,6 @@ const ManageEvent = () => {
                   </div>
                 ))}
                 <button type="submit" className="px-4 py-2 border rounded-md">Add Event</button>
-                {/* <button onClick={onClose} className="mt-4 px-4 py-2 rounded-md bg-gray-300">Close</button> */}
               </form>
             </div>
           </div>
@@ -185,6 +220,17 @@ const ManageEvent = () => {
                 ))}
                 <button type="submit" className="px-4 py-2 border rounded-md">Add User</button>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modal for Events List */}
+        {isEventsListModalOpen && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-md w-96">
+              <h2 className="text-2xl font-bold mb-4">Event List</h2>
+              <EventsList /> {/* Render Events List here */}
+              <button onClick={() => setIsEventsListModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md">Close</button>
             </div>
           </div>
         )}
