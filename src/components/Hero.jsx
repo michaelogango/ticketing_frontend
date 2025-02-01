@@ -30,7 +30,7 @@ const HeroSection = () => {
           {/* Call to action links */}
           <div className="flex gap-4">
             <Link 
-              to="/tickets" 
+              to="/events" 
               className="px-6 py-3 bg-white text-black font-medium rounded hover:bg-white/90 transition-colors"
             >
               Get Tickets

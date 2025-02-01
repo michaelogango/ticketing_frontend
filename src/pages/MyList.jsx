@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import MyEvents from '../components/MyEvents';
+import Footer from '../components/Footer';
+import Navigation from '../components/Nav';
 
 const LoadingSkeleton = () => (
   <div className="space-y-6">
@@ -27,7 +29,7 @@ const MyList = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://127.0.0.1:5000'); // Replace with your API endpoint
+        const response = await fetch('http://127.0.0.1:5000/tickets'); 
         if (!response.ok) throw new Error('Failed to fetch events');
         const data = await response.json();
         setEvents(data);
@@ -74,6 +76,8 @@ const MyList = () => {
   }
 
   return (
+    <>
+    <Navigation />
     <div className="min-h-screen bg-gray-50">
       {/* Header with gradient */}
       <div className="bg-gradient-to-r from-orange-500 to-white">
@@ -167,6 +171,8 @@ const MyList = () => {
         )}
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

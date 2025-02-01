@@ -6,7 +6,10 @@ import Contact from './pages/Contact.jsx'
 import PageEvents from './pages/PageEvents.jsx'
 import './index.css'
 import App from './pages/App.jsx'
+import Login from './pages/Login.jsx'
 import Navigation from './components/Nav'
+import ManageEvents from './pages/ManageEvents.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +20,8 @@ createRoot(document.getElementById('root')).render(
     <Route path ="/events" element= {<PageEvents/>}/>
     <Route path ="/tickets" element= {<MyList/>}/> 
     <Route path ="/contact" element= {<Contact/>}/>
+    <Route path ="/login" element= {<Login/>}/>
+    <Route path ="/manage" element= {<ManageEvents/>}/>
 
 
    </Routes>
