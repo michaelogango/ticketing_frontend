@@ -29,7 +29,13 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-12 gap-8 mb-12">
         {/* Logo */}
         <div className="col-span-3">
-          <Link to="/" className="text-xl font-cursive">Logo</Link>
+          <Link href="/" className="flex items-center">
+                    <img 
+                      src="../../public/Images/logo.svg" 
+                      alt="Company Logo" 
+                      className="h-22 w-auto"
+                    />
+                  </Link>
         </div>
 
         {/* Quick Links */}
