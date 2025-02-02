@@ -24,7 +24,9 @@ const MyList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [users,setUsers]= useState([]);
 
+  
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -41,6 +43,19 @@ const MyList = () => {
     };
 
     fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/users');
+        const result = await response.json();
+        setUsers(result); // Set fetched users into state
+      } catch (error) {
+        console.error('Error fetching Users:', error);
+      }
+    };
+    fetchUser();
   }, []);
 
   // Group events by category

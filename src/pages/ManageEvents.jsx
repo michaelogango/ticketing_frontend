@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import Navigation from '../components/Nav';
 import EventsList from '../components/EventsList'; 
+import UserFormikData from '../components/Get/userData'
+import EventFormikData from '../components/Get/EventData'
+import VenueFormikData from '../components/Get/VenueData'
 
 const ManageEvent = () => {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
   const [isEventsListModalOpen, setIsEventsListModalOpen] = useState(false);
+  const [isUserlistModalOpen,setIsUserlistModalOpen] = useState(false);
+  const [isVenuelistModalOpen,setIsVenuelistModalOpen] = useState(false);
+  const [venues, setVenues] = useState([]);
 
   const [eventData, setEventData] = useState({
     title: '',
@@ -27,11 +33,25 @@ const ManageEvent = () => {
 
   const [venueData, setVenueData] = useState({
     name: '',
-    address: '',
+    location: '',
     capacity: ''
     });
 
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/venues');
+        const result = await response.json();
+        setVenues(result); // Set fetched venues into state
+      } catch (error) {
+        console.error('Error fetching venues:', error);
+      }
+    };
+    fetchVenues();
+  }, []);
+  
 
   // Handles changes for both event and user forms
   const handleInputChange = (e, type) => {
@@ -71,7 +91,7 @@ const ManageEvent = () => {
       if (!userData.phone) newErrors.phone = 'Phone number is required';
     }else if (type === "venue") {
         if (!venueData.name) newErrors.name = 'Name is required';
-        if (!venueData.address) newErrors.address = 'Address is required';
+        if (!venueData.location) newErrors.address = 'Address is required';
         if (!venueData.capacity || isNaN(venueData.capacity)) newErrors.capacity = 'Valid capacity is required';
       }
 
@@ -125,17 +145,21 @@ const ManageEvent = () => {
     if (validateForm("venue")) {
       try {
         const response = await fetch('http://127.0.0.1:5000/venues', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(venueData),
-            });
-        } catch (error) {
-            console.error('Error adding venue:', error);
-        }
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(venueData),
+        });
+
+        const result = await response.json();
+        console.log('Venue added successfully:', result);
+        setIsVenueModalOpen(false); // Close modal on success
+      } catch (error) {
+        console.error('Error adding venue:', error);
+      }
     }
-    }
+};
 
 
   return (
@@ -158,7 +182,7 @@ const ManageEvent = () => {
             <p className="text-gray-600">Event customization at your fingertips.</p>
             <div className="flex justify-center gap-3">
               <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsEventModalOpen(true)}>Add Event</button>
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsEventModalOpen(true)}>Manage Event</button>
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsEventsListModalOpen(true)}>Manage Event</button>
             </div>
           </div>
         </div>
@@ -170,7 +194,7 @@ const ManageEvent = () => {
             <p className="text-gray-600">Attend your event with those you consider family.</p>
             <div className="flex justify-center gap-3">
               <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserModalOpen(true)}>Add User</button>
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsEventsListModalOpen(true)}>View User</button> {/* Opens Events List modal */}
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsUserlistModalOpen(true)}>View User</button> {/* Opens Events List modal */}
             </div>    
           </div>
         </div>
@@ -181,29 +205,43 @@ const ManageEvent = () => {
             <p className="text-gray-600">Location, Location Location, feel free to put any Venue</p>
             <div className="flex justify-center gap-3">
               <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsVenueModalOpen(true)}>Add Venue</button>
-              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsVenueModalOpen(true)}>Manage Venue</button>
+              <button className="px-9 py-2 rounded-md text-sm border border-orange-300 text-gray-700" onClick={() => setIsVenuelistModalOpen(true)}>Manage Venue</button>
             </div>
           </div>
         </div>
 
+        
         {/* Modal for Adding Event */}
-        {isEventModalOpen && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-md w-96">
-              <h2 className="text-2xl font-bold mb-4">Add Event</h2>
-              <form onSubmit={handleEventSubmit}>
-                {["title", "date", "time", "venue", "ticketPrice", "description"].map((field) => (
-                  <div className="mb-4" key={field}>
-                    <label className="block text-sm font-medium">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-                    <input type="text" name={field} value={eventData[field]} onChange={(e) => handleInputChange(e, "event")} className="mt-1 p-2 border w-full" />
-                    {errors[field] && <p className="text-red-500">{errors[field]}</p>}
-                  </div>
-                ))}
-                <button type="submit" className="px-4 py-2 border rounded-md">Add Event</button>
-              </form>
-            </div>
+      {isEventModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-md w-96">
+            <h2 className="text-2xl font-bold mb-4">Add Event</h2>
+            <form onSubmit={handleEventSubmit}>
+              {/* Other form fields */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium">Venue</label>
+                <select
+                  name="venue"
+                  value={eventData.venue}
+                  onChange={(e) => handleInputChange(e, 'event')}
+                  className="mt-1 p-2 border w-full"
+                >
+                  <option value="">Select a venue</option>
+                  {venues.map((venue) => (
+                    <option key={venue.id} value={venue.name}>
+                      {venue.name} - {venue.location}
+                    </option>
+                  ))}
+                </select>
+                {errors.venue && <p className="text-red-500">{errors.venue}</p>}
+              </div>
+              {/* Other form fields */}
+              <button type="submit" className="px-4 py-2 border rounded-md">Add Event</button>
+              <button onClick={() => setIsEventModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md">Close</button>
+            </form>
           </div>
-        )}
+        </div>
+      )}
 
         {/* Modal for Adding User */}
         {isUserModalOpen && (
@@ -219,6 +257,7 @@ const ManageEvent = () => {
                   </div>
                 ))}
                 <button type="submit" className="px-4 py-2 border rounded-md">Add User</button>
+                <button onClick={() => setIsUserModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md">Close</button>
               </form>
             </div>
           </div>
@@ -227,13 +266,70 @@ const ManageEvent = () => {
         {/* Modal for Events List */}
         {isEventsListModalOpen && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-md w-96">
-              <h2 className="text-2xl font-bold mb-4">Event List</h2>
-              <EventsList /> {/* Render Events List here */}
+            <div className="bg-white p-6 rounded-lg shadow-md w-96 max-h-screen overflow-y-auto">
+              <EventFormikData /> {/* Render Events List here */}
               <button onClick={() => setIsEventsListModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md">Close</button>
             </div>
           </div>
         )}
+
+    
+
+        {/* Modal for Viewing Users */}
+        {isUserlistModalOpen && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-4xl  max-h-screen overflow-y-auto">
+              <UserFormikData />
+              <button onClick={() => setIsUserlistModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md bg-red-500 text-white">
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+
+        {/* Modal for Viewing Users */}
+        {isVenuelistModalOpen && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-4xl  max-h-screen overflow-y-auto">
+              <VenueFormikData />
+              <button onClick={() => setIsVenuelistModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md bg-red-500 text-white">
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+
+        {/* Modal for Adding Venue */}
+        {isVenueModalOpen && (
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white p-6 rounded-lg shadow-md w-96">
+                <h2 className="text-2xl font-bold mb-4">Add Venue</h2>
+                <form onSubmit={handleVenueSubmit}>
+                    {["name", "location", "capacity"].map((field) => (
+                    <div className="mb-4" key={field}>
+                        <label className="block text-sm font-medium">
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                        </label>
+                        <input
+                        type={field === "capacity" ? "number" : "text"}
+                        name={field}
+                        value={venueData[field] || ""}
+                        onChange={(e) => handleInputChange(e, "venue")}
+                        className="mt-1 p-2 border w-full"
+                        required
+                        />
+                        {errors[field] && <p className="text-red-500">{errors[field]}</p>}
+                    </div>
+                    ))}
+                    <button type="submit" className="px-4 py-2 border rounded-md">Add Venue</button>
+                    <button onClick={() => setIsVenueModalOpen(false)} className="mt-4 px-4 py-2 border rounded-md"> Close</button>
+                </form>
+                </div>
+            </div>
+            )}
+
       </div>
       <Footer />
     </>

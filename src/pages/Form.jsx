@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-const Form = ({ initialValues, validationSchema, onSubmit, fields }) => {
+const Reuseform = ({ initialValues, validationSchema, onSubmit, fields }) => {
   const formik = useFormik({
     initialValues,
     validationSchema: Yup.object(validationSchema),
@@ -39,4 +39,4 @@ const Form = ({ initialValues, validationSchema, onSubmit, fields }) => {
   );
 };
 
-export default Form;
+export default Reuseform;

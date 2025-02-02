@@ -17,7 +17,7 @@ const SearchBar = ({ onSearch }) => (
 );
 
 const PageEvents = () => {
-  // ✅ Correctly defining state variables
+  
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
