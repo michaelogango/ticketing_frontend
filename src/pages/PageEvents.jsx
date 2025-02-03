@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Navigation from '../components/Nav';
-import Footer from '../components/Footer';
-import { Search } from 'lucide-react';
-import EventCard from '../components/EventCard';
+import React, { useState, useEffect } from "react";
+import Navigation from "../components/Nav";
+import Footer from "../components/Footer";
+import { Search } from "lucide-react";
+import EventCard from "../components/EventCard";
 
 const SearchBar = ({ onSearch }) => (
   <div className="relative w-full max-w-2xl mx-auto">
@@ -17,39 +17,91 @@ const SearchBar = ({ onSearch }) => (
 );
 
 const PageEvents = () => {
-  
   const [events, setEvents] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/events");
         if (!response.ok) {
-          throw new Error("Failed to fetch events");
+          throw new Error(`Failed to fetch events: ${response.status}`);
         }
         const data = await response.json();
-        setEvents(data);
+        console.log("Fetched events:", data);
+        setEvents(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching events:", error);
+        setEvents([]);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/users");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch users: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched users:", data);
+        setUsers(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setUsers([]);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleBookNow = (eventId) => {
-    console.log(`Booking event with ID: ${eventId}`);
+    setSelectedEvent(eventId);
+    setShowModal(true);
   };
 
-  const filteredEvents = events.filter((event) => {
-    const title = event.title ? event.title.toLowerCase() : "";
-    // const description = event.description ? event.description.toLowerCase() : "";
-    return title.includes(searchQuery.toLowerCase());
-  });
+  const confirmBooking = async () => {
+    if (!selectedUser) {
+      alert("Please select a user.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/tickets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ eventId: selectedEvent, userId: selectedUser }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to book event.");
+      }
+
+      alert("Event booked successfully!");
+      setShowModal(false);
+      setSelectedUser(null);
+      setSelectedEvent(null);
+    } catch (error) {
+      console.error("Error booking event:", error);
+      alert("Failed to book event.");
+    }
+  };
+
+  const filteredEvents = events.filter((event) =>
+    event.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -61,7 +113,7 @@ const PageEvents = () => {
               <div className="text-center text-white">
                 <h1 className="text-4xl font-bold mb-2">Discover</h1>
                 <h2 className="text-6xl font-extrabold mb-4">Explore Upcoming Events</h2>
-                <p className="text-blue-100 text-lg mb-8">
+                <p className="text-orange-100 text-lg mb-8">
                   Find and purchase tickets for exciting events happening near you.
                 </p>
               </div>
@@ -83,15 +135,49 @@ const PageEvents = () => {
           ) : (
             <div className="space-y-6">
               {filteredEvents.map((event) => (
-                <EventCard key={event.id} event={event} onBookNow={handleBookNow} />
+                <EventCard key={event.id} event={event} onBookNow={() => handleBookNow(event.id)} />
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Select a User</h2>
+            <ul className="mb-4">
+              {users.map((user) => (
+                <li
+                  key={user.id}
+                  className={`p-2 cursor-pointer rounded-md ${selectedUser === user.id ? "bg-orange-500 text-white" : "hover:bg-gray-200"}`}
+                  onClick={() => setSelectedUser(user.id)}
+                >
+                  {user.name}
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-end space-x-2">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-orange-600 text-white px-4 py-2 rounded"
+                onClick={confirmBooking}
+              >
+                Confirm Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );
 };
 
-export default PageEvents;
+export default PageEvents; 

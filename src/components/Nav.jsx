@@ -35,13 +35,13 @@ const Navigation = () => {
       <div className="flex items-center space-x-3">
       <button
           className="px-4 py-1 text-gray-600 border border-gray-300 rounded hover:bg-gray-50"
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/logi')}
         >
           Join
         </button>
         <button
           className="px-4 py-1 text-white bg-black rounded hover:bg-gray-800"
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/logi')}
         >
           Login
         </button>

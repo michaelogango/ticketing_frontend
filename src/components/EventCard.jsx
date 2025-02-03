@@ -23,7 +23,7 @@ const EventCard = ({ event, onBookNow }) => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Venue</p>
-              <p className="font-medium">{event.venue}</p>
+              <p className="font-medium">{event.venue.en}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Price</p>
