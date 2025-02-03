@@ -14,7 +14,7 @@ const VenueFormikData = () => {
 
   const fetchVenues = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/venues');
+      const response = await fetch('https://ticket-db-dtex.onrender.com/venues');
       const data = await response.json();
       setVenues(data);
     } catch (error) {
@@ -24,7 +24,7 @@ const VenueFormikData = () => {
 
   const handleDelete = async (venueId) => {
     try {
-      await fetch(`http://127.0.0.1:5000/venues/${venueId}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/venues/${venueId}`, {
         method: 'DELETE',
       });
       setVenues(venues.filter(venue => venue.id !== venueId));
@@ -40,7 +40,7 @@ const VenueFormikData = () => {
 
   const handleUpdate = async (values, { setSubmitting }) => {
     try {
-      await fetch(`http://127.0.0.1:5000/venues/${editVenue.id}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/venues/${editVenue.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

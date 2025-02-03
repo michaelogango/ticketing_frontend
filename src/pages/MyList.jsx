@@ -14,7 +14,7 @@ const MyList = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/users');
+        const response = await fetch('https://ticket-db-dtex.onrender.com/users');
         if (!response.ok) throw new Error('Failed to fetch users');
         const result = await response.json();
         setUsers(result);
@@ -28,7 +28,7 @@ const MyList = () => {
   const fetchUserTickets = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:5000/tickets?user_id=${userId}`);
+      const response = await fetch(`https://ticket-db-dtex.onrender.com/tickets?user_id=${userId}`);
       if (!response.ok) throw new Error('Failed to fetch tickets');
       const data = await response.json();
       setEvents(data);

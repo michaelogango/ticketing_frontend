@@ -28,7 +28,7 @@ const PageEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/events");
+        const response = await fetch("https://ticket-db-dtex.onrender.com/events");
         if (!response.ok) {
           throw new Error(`Failed to fetch events: ${response.status}`);
         }
@@ -49,7 +49,7 @@ const PageEvents = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/users");
+        const response = await fetch("https://ticket-db-dtex.onrender.com/users");
         if (!response.ok) {
           throw new Error(`Failed to fetch users: ${response.status}`);
         }
@@ -77,7 +77,7 @@ const PageEvents = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/tickets", {
+      const response = await fetch("https://ticket-db-dtex.onrender.com/tickets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

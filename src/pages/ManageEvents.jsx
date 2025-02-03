@@ -42,7 +42,7 @@ const ManageEvent = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/venues');
+        const response = await fetch('https://ticket-db-dtex.onrender.com/venues');
         const result = await response.json();
         setVenues(result); // Set fetched venues into state
       } catch (error) {
@@ -104,7 +104,7 @@ const ManageEvent = () => {
     e.preventDefault();
     if (validateForm("event")) {
       try {
-        const response = await fetch('http://127.0.0.1:5000/events', {
+        const response = await fetch('https://ticket-db-dtex.onrender.com/events', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const ManageEvent = () => {
     e.preventDefault();
     if (validateForm("user")) {
       try {
-        const response = await fetch('http://127.0.0.1:5000/users', {
+        const response = await fetch('https://ticket-db-dtex.onrender.com/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const ManageEvent = () => {
     e.preventDefault();
     if (validateForm("venue")) {
       try {
-        const response = await fetch('http://127.0.0.1:5000/venues', {
+        const response = await fetch('https://ticket-db-dtex.onrender.com/venues', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

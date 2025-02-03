@@ -14,7 +14,7 @@ const EventFormikData = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/events');
+      const response = await fetch('https://ticket-db-dtex.onrender.com/events');
       const data = await response.json();
       setEvents(data);
     } catch (error) {
@@ -24,7 +24,7 @@ const EventFormikData = () => {
 
   const handleDelete = async (eventId) => {
     try {
-      await fetch(`http://127.0.0.1:5000/events/${eventId}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/events/${eventId}`, {
         method: 'DELETE',
       });
       setEvents(events.filter(event => event.id !== eventId));
@@ -40,7 +40,7 @@ const EventFormikData = () => {
 
   const handleUpdate = async (values, { setSubmitting }) => {
     try {
-      await fetch(`http://127.0.0.1:5000/events/${editEvent.id}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/events/${editEvent.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

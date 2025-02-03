@@ -14,7 +14,7 @@ const UserFormikData = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/users');
+      const response = await fetch('https://ticket-db-dtex.onrender.com/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -24,7 +24,7 @@ const UserFormikData = () => {
 
   const handleDelete = async (userId) => {
     try {
-      await fetch(`http://127.0.0.1:5000/users/${userId}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/users/${userId}`, {
         method: 'DELETE',
       });
       setUsers(users.filter(user => user.id !== userId));
@@ -40,7 +40,7 @@ const UserFormikData = () => {
 
   const handleUpdate = async (values, { setSubmitting }) => {
     try {
-      await fetch(`http://127.0.0.1:5000/users/${editUser.id}`, {
+      await fetch(`https://ticket-db-dtex.onrender.com/users/${editUser.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
