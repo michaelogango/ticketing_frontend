@@ -29,11 +29,8 @@ const PageEvents = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("https://ticket-db-dtex.onrender.com/events");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch events: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Failed to fetch events: ${response.status}`);
         const data = await response.json();
-        console.log("Fetched events:", data);
         setEvents(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -50,11 +47,8 @@ const PageEvents = () => {
     const fetchUsers = async () => {
       try {
         const response = await fetch("https://ticket-db-dtex.onrender.com/users");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch users: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Failed to fetch users: ${response.status}`);
         const data = await response.json();
-        console.log("Fetched users:", data);
         setUsers(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -65,8 +59,8 @@ const PageEvents = () => {
     fetchUsers();
   }, []);
 
-  const handleBookNow = (eventId) => {
-    setSelectedEvent(eventId);
+  const handleBookNow = (event) => {
+    setSelectedEvent(event);
     setShowModal(true);
   };
 
@@ -82,12 +76,15 @@ const PageEvents = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ eventId: selectedEvent, userId: selectedUser }),
+        body: JSON.stringify({
+          eventid: selectedEvent.id,
+          userid: selectedUser,
+          ticketType: "General", // Default ticket type
+          price: selectedEvent.ticketprice, // Use event's price
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to book event.");
-      }
+      if (!response.ok) throw new Error("Failed to book event.");
 
       alert("Event booked successfully!");
       setShowModal(false);
@@ -135,22 +132,29 @@ const PageEvents = () => {
           ) : (
             <div className="space-y-6">
               {filteredEvents.map((event) => (
-                <EventCard key={event.id} event={event} onBookNow={() => handleBookNow(event.id)} />
+                <EventCard key={event.id} event={event} onBookNow={() => handleBookNow(event)} />
               ))}
             </div>
           )}
         </div>
       </div>
 
-      {showModal && (
+      {showModal && selectedEvent && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Select a User</h2>
+            <h2 className="text-xl font-bold mb-4">Confirm Booking</h2>
+            <p className="mb-2"><strong>Event:</strong> {selectedEvent.title}</p>
+            <p className="mb-2"><strong>Date:</strong> {selectedEvent.date}</p>
+            <p className="mb-2"><strong>Price:</strong> ${selectedEvent.ticketprice}</p>
+            
+            <h3 className="text-lg font-semibold mb-2">Select a User</h3>
             <ul className="mb-4">
               {users.map((user) => (
                 <li
                   key={user.id}
-                  className={`p-2 cursor-pointer rounded-md ${selectedUser === user.id ? "bg-orange-500 text-white" : "hover:bg-gray-200"}`}
+                  className={`p-2 cursor-pointer rounded-md ${
+                    selectedUser === user.id ? "bg-orange-500 text-white" : "hover:bg-gray-200"
+                  }`}
                   onClick={() => setSelectedUser(user.id)}
                 >
                   {user.name}
@@ -180,4 +184,4 @@ const PageEvents = () => {
   );
 };
 
-export default PageEvents; 
+export default PageEvents;

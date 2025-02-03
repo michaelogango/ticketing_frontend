@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight } from 'lucide-react';
 import MyEvents from '../components/MyEvents';
 import Footer from '../components/Footer';
 import Navigation from '../components/Nav';
 
 const MyList = () => {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('');
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,12 +25,20 @@ const MyList = () => {
   }, []);
 
   const fetchUserTickets = async (userId) => {
+    if (!userId) return;
     try {
       setLoading(true);
-      const response = await fetch(`https://ticket-db-dtex.onrender.com/tickets?user_id=${userId}`);
+      setError(null);
+      setEvents([]); // Reset previous events
+  
+      const response = await fetch(`https://ticket-db-dtex.onrender.com/tickets`);
       if (!response.ok) throw new Error('Failed to fetch tickets');
+  
       const data = await response.json();
-      setEvents(data);
+      
+      // Ensure tickets belong to the selected user
+      const filteredTickets = data.filter(ticket => ticket.user_id === userId);
+      setEvents(filteredTickets);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -48,14 +55,13 @@ const MyList = () => {
   return (
     <>
       <Navigation />
-      {/* Header Section */}
       <div className="relative mb-12">
-          <div className="bg-gradient-to-r from-orange-600 to-black-800 pb-32 pt-12 text-center text-white">
-            <h1 className="text-4xl font-bold">Discover</h1>
-            <h2 className="text-6xl font-extrabold">Manage Your Events</h2>
-            <p className="text-blue-100 text-lg">Easily upload, update, or delete your events with just a few clicks.</p>
-          </div>
+        <div className="bg-gradient-to-r from-orange-600 to-black-800 pb-32 pt-12 text-center text-white">
+          <h1 className="text-4xl font-bold">Discover</h1>
+          <h2 className="text-6xl font-extrabold">Manage Your Events</h2>
+          <p className="text-blue-100 text-lg">Easily upload, update, or delete your events with just a few clicks.</p>
         </div>
+      </div>
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold mb-4 text-center">View User Tickets</h1>
@@ -64,7 +70,7 @@ const MyList = () => {
             <select
               className="w-full p-2 border rounded-md"
               onChange={handleUserChange}
-              value={selectedUser || ''}
+              value={selectedUser}
             >
               <option value="" disabled>Select a user</option>
               {users.map(user => (
@@ -100,4 +106,4 @@ const MyList = () => {
   );
 };
 
-export default MyList;
+export default MyList;
